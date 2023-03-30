@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/Marcio-VOT/projeto19-drivencare#readme",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "dayjs": "^1.11.7",
     "dotenv": "^16.0.3",
