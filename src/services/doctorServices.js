@@ -2,11 +2,13 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import doctorRepositories from "../repositories/doctorRepositories.js";
+import err from "../errors/index.js";
 dotenv.config();
 
 async function create({ name, email, password, role, state, citie }) {
   const { rowCount } = await doctorRepositories.findByEmail(email);
-  if (rowCount) throw new Error("User already exists");
+  if (rowCount) throw err.duplicatedEmailError(email);
+
   const hashedPassword = await bcrypt.hash(password, 10);
 
   await doctorRepositories.createDocData({
@@ -14,7 +16,6 @@ async function create({ name, email, password, role, state, citie }) {
     state,
     citie,
   });
-
   await doctorRepositories.create({
     name,
     email,
@@ -30,10 +31,10 @@ async function signin({ email, password }) {
     rowCount,
     rows: [user],
   } = await doctorRepositories.findByEmail(email);
-  if (!rowCount) throw new Error("Incorrect email or password");
+  if (!rowCount) throw err.invalidCredentialsError();
 
   const validPassword = await bcrypt.compare(password, user.password);
-  if (!validPassword) throw new Error("Incorrect email or password");
+  if (!validPassword) throw err.invalidCredentialsError();
 
   const token = jwt.sign({ userId: user.id }, process.env.SECRET_KEY, {
     expiresIn: "3h",

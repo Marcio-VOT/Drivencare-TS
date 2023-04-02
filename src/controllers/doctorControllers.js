@@ -1,22 +1,22 @@
 import doctorServices from "../services/doctorServices.js";
 
-async function create(req, res) {
+async function create(req, res, next) {
   const { name, email, password, role, state, citie } = req.body;
   try {
     await doctorServices.create({ name, email, password, role, state, citie });
     return res.sendStatus(201);
   } catch (error) {
-    return res.status(500).send(error.message);
+    next(error);
   }
 }
 
-async function signin(req, res) {
+async function signin(req, res, next) {
   const { email, password } = req.body;
   try {
     const token = await doctorServices.signin({ email, password });
     return res.send({ token });
   } catch (error) {
-    return res.status(500).send(error.message);
+    next(error);
   }
 }
 
