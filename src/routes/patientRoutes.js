@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { validateSchema } from "../middlewares/schemaValidation.js";
-import { createPatient, signinPatient } from "../schemas/patientSchemas.js";
+import {
+  createAppointment,
+  createPatient,
+  signinPatient,
+} from "../schemas/patientSchemas.js";
 import patientControllers from "../controllers/patientControllers.js";
 import authValidation from "../middlewares/authMiddleware.js";
 
@@ -20,6 +24,12 @@ patientRoutes.get(
   "/appointments",
   authValidation,
   patientControllers.listAppointments
+);
+patientRoutes.post(
+  "/appointments",
+  authValidation,
+  validateSchema(createAppointment),
+  patientControllers.createAppointment
 );
 
 export default patientRoutes;

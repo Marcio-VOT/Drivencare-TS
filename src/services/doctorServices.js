@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 import doctorRepositories from "../repositories/doctorRepositories.js";
 import err from "../errors/index.js";
+import appointmentRepositories from "../repositories/appointmentRepositories.js";
 dotenv.config();
 
 async function create({ name, email, password, role, state, city }) {
@@ -55,9 +56,25 @@ async function listAppointments({ id, type }) {
   return await doctorRepositories.listAppointments(id);
 }
 
+async function setStatus({ id, status, type, doctorId }) {
+  if (type !== "doctor") throw err.wrongAuthorizedUserError(type);
+
+  const { rowCount: doctorCount } = await doctorRepositories.findById(doctorId);
+  if (!doctorCount) throw err.noDataError(type);
+
+  const { rowCount: appCount } = await appointmentRepositories.findAppointment({
+    id,
+    doctorId,
+  });
+  if (!appCount) throw err.noDataError({ id, doctorId });
+
+  await appointmentRepositories.aupdateAppointment({ doctorId, id, status });
+}
+
 export default {
   create,
   signin,
   listDoctors,
   listAppointments,
+  setStatus,
 };

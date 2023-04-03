@@ -36,10 +36,19 @@ function invalidCredentialsError() {
   };
 }
 
+function noDataError(data) {
+  return {
+    name: "noDataError",
+    message: "No data was found",
+    data,
+  };
+}
+
 export default {
   duplicatedEmailError,
   unauthorizedError,
   invalidCredentialsError,
   conflictError,
   wrongAuthorizedUserError,
+  noDataError,
 };

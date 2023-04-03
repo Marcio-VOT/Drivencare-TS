@@ -9,20 +9,12 @@ appointmentRoutes.get(
   authValidation,
   appointmentControllers.listAppointments
 );
-appointmentRoutes.put(
-  "/denied",
-  authValidation,
-  appointmentControllers.listAppointments
-);
+appointmentRoutes.put("/denied", authValidation, appointmentControllers.deny);
 appointmentRoutes.put(
   "/accepted",
   authValidation,
-  appointmentControllers.listAppointments
+  appointmentControllers.accept
 );
-appointmentRoutes.put(
-  "/ended",
-  authValidation,
-  appointmentControllers.listAppointments
-);
+appointmentRoutes.put("/ended", authValidation, appointmentControllers.end);
 
 export default appointmentRoutes;

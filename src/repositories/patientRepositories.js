@@ -29,7 +29,7 @@ async function findById(id) {
 }
 
 async function listAppointments(id) {
-  return db.query(
+  return await db.query(
     `
     SELECT app.id, app.date, d.name, r.role, app_s.status
     FROM appointments app

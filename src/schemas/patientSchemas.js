@@ -10,3 +10,8 @@ export const signinPatient = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().min(8).required(),
 });
+
+export const createAppointment = Joi.object({
+  date: Joi.date().required(),
+  doctorId: Joi.number().integer().min(1).required(),
+});

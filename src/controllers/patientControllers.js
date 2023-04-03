@@ -31,8 +31,26 @@ async function listAppointments(req, res, next) {
   }
 }
 
+async function createAppointment(req, res, next) {
+  const { id } = res.locals.user;
+  const { type } = res.locals;
+  const { date, doctorId } = req.body;
+  try {
+    await patientServices.createAppointment({
+      date,
+      doctorId,
+      type,
+      userId: id,
+    });
+    return res.sendStatus(200);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export default {
   create,
   signin,
   listAppointments,
+  createAppointment,
 };
