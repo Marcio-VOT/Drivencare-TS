@@ -48,10 +48,9 @@ async function createDocData({ role, state, city }) {
 }
 
 async function listDoctors({ role, state, city }) {
-  console.log({ role, state, city });
   return await db.query(
     `
-    SELECT d.name, r.role, s.state, c.city
+    SELECT d.id, d.name, r.role, s.state, c.city
     FROM doctors d
     JOIN roles r ON d.role_id = r.id
     JOIN states s ON d.state_id = s.id

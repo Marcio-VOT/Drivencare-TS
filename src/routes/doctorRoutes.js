@@ -17,6 +17,7 @@ doctorRoutes.post(
   doctorController.signin
 );
 doctorRoutes.get("", authValidation, doctorController.listDoctors);
+
 doctorRoutes.get(
   "/appointments",
   authValidation,

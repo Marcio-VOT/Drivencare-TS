@@ -33,7 +33,6 @@ async function listDoctors(req, res, next) {
 async function listAppointments(req, res, next) {
   const { type } = res.locals;
   const { id } = res.locals.user;
-  console.log(id, type);
   try {
     const { rows } = await doctorServices.listAppointments({ id, type });
     return res.status(200).send(rows);
