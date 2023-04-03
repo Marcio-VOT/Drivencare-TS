@@ -20,7 +20,18 @@ async function signin(req, res, next) {
   }
 }
 
+async function listDoctors(req, res, next) {
+  const { role, state, citie } = req.query;
+  try {
+    const { rows } = await doctorServices.listDoctors({ role, state, citie });
+    return res.status(200).send(rows);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export default {
   create,
   signin,
+  listDoctors,
 };

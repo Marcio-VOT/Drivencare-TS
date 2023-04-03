@@ -20,7 +20,6 @@ VALUES ($1, $2, $3, (SELECT id FROM roles WHERE role = $4), (SELECT id FROM stat
 }
 
 async function createDocData({ role, state, citie }) {
-  console.log(role, state, citie);
   return await db.query(
     `
     WITH new_role AS (
@@ -48,8 +47,22 @@ async function createDocData({ role, state, citie }) {
   );
 }
 
+async function listDoctors({ role, state, citie }) {
+  return await db.query(
+    `
+  SELECT * 
+    FROM doctors
+    WHERE role_id = (select id from roles where role = $1) 
+    OR state_id = (select id from states where state = $2) 
+    AND citie_id = (select id from cities where citie = $3);
+  `,
+    [role, state, citie]
+  );
+}
+
 export default {
   findByEmail,
   createDocData,
   create,
+  listDoctors,
 };

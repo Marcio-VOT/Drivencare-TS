@@ -15,5 +15,6 @@ doctorRoutes.post(
   validateSchema(signinDoctor),
   doctorController.signin
 );
+doctorRoutes.get("", doctorController.listDoctors);
 
 export default doctorRoutes;

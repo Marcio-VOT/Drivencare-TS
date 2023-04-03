@@ -42,7 +42,12 @@ async function signin({ email, password }) {
   return token;
 }
 
+async function listDoctors({ role, state, citie }) {
+  return await doctorRepositories.listDoctors({ role, state, citie });
+}
+
 export default {
   create,
   signin,
+  listDoctors,
 };
