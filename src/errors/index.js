@@ -20,6 +20,15 @@ function unauthorizedError() {
   };
 }
 
+function wrongAuthorizedUserError(type) {
+  return {
+    name: "UnauthorizedError",
+    message: `You must be signed in as a${
+      type === "doctor" ? "patient" : "doctor"
+    } to continue`,
+  };
+}
+
 function invalidCredentialsError() {
   return {
     name: "InvalidCredentialsError",
@@ -32,4 +41,5 @@ export default {
   unauthorizedError,
   invalidCredentialsError,
   conflictError,
+  wrongAuthorizedUserError,
 };

@@ -2,6 +2,7 @@ import { Router } from "express";
 import doctorController from "../controllers/doctorControllers.js";
 import { validateSchema } from "../middlewares/schemaValidation.js";
 import { createDoctor, signinDoctor } from "../schemas/doctorSchemas.js";
+import authValidation from "../middlewares/authMiddleware.js";
 
 const doctorRoutes = Router();
 
@@ -15,6 +16,11 @@ doctorRoutes.post(
   validateSchema(signinDoctor),
   doctorController.signin
 );
-doctorRoutes.get("", doctorController.listDoctors);
+doctorRoutes.get("", authValidation, doctorController.listDoctors);
+doctorRoutes.get(
+  "/appointments",
+  authValidation,
+  doctorController.listAppointments
+);
 
 export default doctorRoutes;

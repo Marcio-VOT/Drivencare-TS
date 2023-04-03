@@ -6,7 +6,7 @@ export const createDoctor = Joi.object({
   password: Joi.string().min(8).required(),
   role: Joi.string().min(3).max(50).required(),
   state: Joi.string().min(3).max(80).required(),
-  citie: Joi.string().min(3).max(80).required(),
+  city: Joi.string().min(3).max(80).required(),
 });
 
 export const signinDoctor = Joi.object({
