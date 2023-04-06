@@ -1,4 +1,5 @@
 import db from "../config/database.js";
+import { Pacient } from "../protocols/user.js";
 
 async function findByEmail(email) {
   return await db.query(
@@ -9,7 +10,7 @@ async function findByEmail(email) {
   );
 }
 
-async function create({ name, email, password }) {
+async function create({ name, email, password }): Promise<void> {
   await db.query(
     `
 INSERT INTO patients (name, email, password)
@@ -19,8 +20,8 @@ VALUES ($1, $2, $3);
   );
 }
 
-async function findById(id) {
-  return await db.query(
+async function findById(id: number) {
+  return await db.query<Pacient>(
     `
   SELECT * FROM patients WHERE id = $1
   `,

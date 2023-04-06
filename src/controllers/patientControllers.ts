@@ -1,6 +1,7 @@
 import patientServices from "../services/patientServices.js";
+import { Request, Response, NextFunction } from "express";
 
-async function create(req, res, next) {
+async function create(req: Request, res: Response, next: NextFunction) {
   const { name, email, password } = req.body;
   try {
     await patientServices.create({ name, email, password });
@@ -10,7 +11,7 @@ async function create(req, res, next) {
   }
 }
 
-async function signin(req, res, next) {
+async function signin(req: Request, res: Response, next: NextFunction) {
   const { email, password } = req.body;
   try {
     const token = await patientServices.signin({ email, password });
@@ -20,7 +21,11 @@ async function signin(req, res, next) {
   }
 }
 
-async function listAppointments(req, res, next) {
+async function listAppointments(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const { id } = res.locals.user;
   const { type } = res.locals;
   try {
@@ -31,7 +36,11 @@ async function listAppointments(req, res, next) {
   }
 }
 
-async function createAppointment(req, res, next) {
+async function createAppointment(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const { id } = res.locals.user;
   const { type } = res.locals;
   const { date, doctorId } = req.body;

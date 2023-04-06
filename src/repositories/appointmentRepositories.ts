@@ -1,7 +1,8 @@
 import db from "../config/database.js";
+import { DoctorAppointment } from "../protocols/user.js";
 
-async function listDoctorAppointments(id) {
-  return await db.query(
+async function listDoctorAppointments(id: number) {
+  return await db.query<DoctorAppointment[]>(
     `
       SELECT app.id, app.date, p.name AS patient, d.name AS doctor, r.role, app_s.status
       FROM appointments app
@@ -17,7 +18,7 @@ async function listDoctorAppointments(id) {
 }
 
 async function findDoctorAppointment({ id, date }) {
-  return await db.query(
+  return await db.query<DoctorAppointment>(
     `
       SELECT app.id, app.date, p.name AS patient, d.name AS doctor, r.role, app_s.status
       FROM appointments app
@@ -33,8 +34,8 @@ async function findDoctorAppointment({ id, date }) {
   );
 }
 
-async function listPatientAppointments(id) {
-  return await db.query(
+async function listPatientAppointments(id: number) {
+  return await db.query<DoctorAppointment>(
     `
         SELECT app.id, app.date, p.name AS patient , d.name AS doctor, r.role, app_s.status
         FROM appointments app
@@ -68,7 +69,7 @@ async function findAppointment({ id, doctorId }) {
   );
 }
 
-async function aupdateAppointment({ id, doctorId, status }) {
+async function aupdateAppointment({ id, doctorId, status }): Promise<void> {
   await db.query(
     `
   UPDATE appointments 

@@ -32,6 +32,7 @@ async function signin({ email, password }) {
     rowCount,
     rows: [user],
   } = await doctorRepositories.findByEmail(email);
+
   if (!rowCount) throw err.invalidCredentialsError();
 
   const validPassword = await bcrypt.compare(password, user.password);
