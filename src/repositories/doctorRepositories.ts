@@ -1,7 +1,15 @@
+import { QueryResult } from "pg";
 import db from "../config/database.js";
-import { Doctor } from "../protocols/user.js";
+import {
+  AppointmentsList,
+  Doctor,
+  DoctorDataById,
+  DoctorDataByName,
+} from "../protocols/user.js";
 
-async function findByEmail(email: string) {
+async function findByEmail(
+  email: string
+): Promise<QueryResult<Doctor & DoctorDataById>> {
   return await db.query(
     `    
       SELECT * FROM doctors WHERE email=$1
@@ -17,7 +25,7 @@ async function create({
   role,
   state,
   city,
-}): Promise<void> {
+}: Omit<Doctor, "id"> & DoctorDataByName): Promise<void> {
   await db.query(
     `
 INSERT INTO doctors (name, email, password, role_id, state_id, city_id)
@@ -27,8 +35,12 @@ VALUES ($1, $2, $3, (SELECT id FROM roles WHERE role = $4), (SELECT id FROM stat
   );
 }
 
-async function createDocData({ role, state, city }) {
-  return await db.query(
+async function createDocData({
+  role,
+  state,
+  city,
+}: DoctorDataByName): Promise<void> {
+  await db.query(
     `
     WITH new_role AS (
         INSERT INTO roles (role)
@@ -55,7 +67,13 @@ async function createDocData({ role, state, city }) {
   );
 }
 
-async function listDoctors({ role, state, city }) {
+async function listDoctors({
+  role,
+  state,
+  city,
+}: DoctorDataByName): Promise<
+  QueryResult<Omit<Doctor, "email" | "password"> & DoctorDataByName>
+> {
   return await db.query(
     `
     SELECT d.id, d.name, r.role, s.state, c.city
@@ -71,8 +89,10 @@ async function listDoctors({ role, state, city }) {
   );
 }
 
-async function findById(id: number) {
-  return await db.query<Doctor>(
+async function findById(
+  id: number
+): Promise<QueryResult<Doctor & DoctorDataById>> {
+  return await db.query(
     `
   SELECT * FROM doctors WHERE id = $1
   `,
@@ -80,7 +100,9 @@ async function findById(id: number) {
   );
 }
 
-async function listAppointments(id) {
+async function listAppointments(
+  id: number
+): Promise<QueryResult<AppointmentsList>> {
   return await db.query(
     `
     SELECT app.id, app.date, p.name, r.role, app_s.status

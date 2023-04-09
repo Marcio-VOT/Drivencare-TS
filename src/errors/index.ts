@@ -1,4 +1,4 @@
-function duplicatedEmailError(email) {
+function duplicatedEmailError(email: string | string[]) {
   return {
     name: "DuplicatedEmailError",
     message: "There is already an user with given email",
@@ -6,7 +6,7 @@ function duplicatedEmailError(email) {
   };
 }
 
-function conflictError(message) {
+function conflictError(message: string | string[]) {
   return {
     name: "ConflictError",
     message,
@@ -20,7 +20,7 @@ function unauthorizedError() {
   };
 }
 
-function wrongAuthorizedUserError(type) {
+function wrongAuthorizedUserError(type: string | string[]) {
   return {
     name: "UnauthorizedError",
     message: `You must be signed in as a${
@@ -36,7 +36,7 @@ function invalidCredentialsError() {
   };
 }
 
-function noDataError(data) {
+function noDataError(data: any) {
   return {
     name: "noDataError",
     message: "No data was found",

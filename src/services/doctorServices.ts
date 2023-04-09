@@ -4,9 +4,18 @@ import dotenv from "dotenv";
 import doctorRepositories from "../repositories/doctorRepositories.js";
 import err from "../errors/index.js";
 import appointmentRepositories from "../repositories/appointmentRepositories.js";
+import { Doctor, DoctorDataByName } from "../protocols/user.js";
+import { number } from "joi";
 dotenv.config();
 
-async function create({ name, email, password, role, state, city }) {
+async function create({
+  name,
+  email,
+  password,
+  role,
+  state,
+  city,
+}: Omit<Doctor, "id"> & DoctorDataByName) {
   const { rowCount } = await doctorRepositories.findByEmail(email);
   if (rowCount) throw err.duplicatedEmailError(email);
 
@@ -27,7 +36,7 @@ async function create({ name, email, password, role, state, city }) {
   });
 }
 
-async function signin({ email, password }) {
+async function signin({ email, password }: Omit<Doctor, "id" | "name">) {
   const {
     rowCount,
     rows: [user],
@@ -48,16 +57,26 @@ async function signin({ email, password }) {
   return token;
 }
 
-async function listDoctors({ role, state, city }) {
+async function listDoctors({ role, state, city }: DoctorDataByName) {
   return await doctorRepositories.listDoctors({ role, state, city });
 }
 
-async function listAppointments({ id, type }) {
+async function listAppointments({ id, type }: { id: number; type: string }) {
   if (type !== "doctor") throw err.wrongAuthorizedUserError(type);
   return await doctorRepositories.listAppointments(id);
 }
 
-async function setStatus({ id, status, type, doctorId }) {
+async function setStatus({
+  id,
+  status,
+  type,
+  doctorId,
+}: {
+  id: number;
+  doctorId: number;
+  type: string;
+  status: string;
+}) {
   if (type !== "doctor") throw err.wrongAuthorizedUserError(type);
 
   const { rowCount: doctorCount } = await doctorRepositories.findById(doctorId);

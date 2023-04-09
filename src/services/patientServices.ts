@@ -7,10 +7,15 @@ import appointmentRepositories from "../repositories/appointmentRepositories.js"
 import doctorRepositories from "../repositories/doctorRepositories.js";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc.js";
+import { Pacient } from "../protocols/user.js";
 dayjs.extend(utc);
 dotenv.config();
 
-async function create({ name, email, password }) {
+async function create({
+  name,
+  email,
+  password,
+}: Omit<Pacient, "id">): Promise<void> {
   const { rowCount } = await patientRepositories.findByEmail(email);
   if (rowCount) throw err.duplicatedEmailError(email);
 
@@ -23,7 +28,10 @@ async function create({ name, email, password }) {
   });
 }
 
-async function signin({ email, password }) {
+async function signin({
+  email,
+  password,
+}: Omit<Pacient, "id" | "name">): Promise<string> {
   const {
     rowCount,
     rows: [user],
@@ -43,12 +51,22 @@ async function signin({ email, password }) {
   return token;
 }
 
-async function listAppointments({ id, type }) {
+async function listAppointments({ id, type }: { id: number; type: string }) {
   if (type !== "patient") throw err.wrongAuthorizedUserError(type);
   return await patientRepositories.listAppointments(id);
 }
 
-async function createAppointment({ date, doctorId, type, userId }) {
+async function createAppointment({
+  date,
+  doctorId,
+  type,
+  userId,
+}: {
+  userId: number;
+  doctorId: number;
+  type: string;
+  date: string | Date;
+}): Promise<void> {
   if (type !== "patient") throw err.wrongAuthorizedUserError(type);
 
   const { rowCount: doctorCount } = await doctorRepositories.findById(doctorId);

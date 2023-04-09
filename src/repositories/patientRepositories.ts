@@ -1,7 +1,8 @@
+import { QueryResult } from "pg";
 import db from "../config/database.js";
-import { Pacient } from "../protocols/user.js";
+import { AppointmentsList, Pacient } from "../protocols/user.js";
 
-async function findByEmail(email) {
+async function findByEmail(email: string): Promise<QueryResult<Pacient>> {
   return await db.query(
     `    
       SELECT * FROM patients WHERE email=$1
@@ -10,7 +11,11 @@ async function findByEmail(email) {
   );
 }
 
-async function create({ name, email, password }): Promise<void> {
+async function create({
+  name,
+  email,
+  password,
+}: Omit<Pacient, "id">): Promise<void> {
   await db.query(
     `
 INSERT INTO patients (name, email, password)
@@ -20,8 +25,8 @@ VALUES ($1, $2, $3);
   );
 }
 
-async function findById(id: number) {
-  return await db.query<Pacient>(
+async function findById(id: number): Promise<QueryResult<Pacient>> {
+  return await db.query(
     `
   SELECT * FROM patients WHERE id = $1
   `,
@@ -29,7 +34,9 @@ async function findById(id: number) {
   );
 }
 
-async function listAppointments(id) {
+async function listAppointments(
+  id: number
+): Promise<QueryResult<AppointmentsList>> {
   return await db.query(
     `
     SELECT app.id, app.date, d.name, r.role, app_s.status

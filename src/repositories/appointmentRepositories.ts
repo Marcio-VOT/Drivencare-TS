@@ -1,8 +1,11 @@
+import { QueryResult } from "pg";
 import db from "../config/database.js";
-import { DoctorAppointment } from "../protocols/user.js";
+import { DoctorAppointment, RawAppointment } from "../protocols/user.js";
 
-async function listDoctorAppointments(id: number) {
-  return await db.query<DoctorAppointment[]>(
+async function listDoctorAppointments(
+  id: number
+): Promise<QueryResult<DoctorAppointment[]>> {
+  return await db.query(
     `
       SELECT app.id, app.date, p.name AS patient, d.name AS doctor, r.role, app_s.status
       FROM appointments app
@@ -17,8 +20,14 @@ async function listDoctorAppointments(id: number) {
   );
 }
 
-async function findDoctorAppointment({ id, date }) {
-  return await db.query<DoctorAppointment>(
+async function findDoctorAppointment({
+  id,
+  date,
+}: {
+  id: number;
+  date: string | Date;
+}): Promise<QueryResult<DoctorAppointment>> {
+  return await db.query(
     `
       SELECT app.id, app.date, p.name AS patient, d.name AS doctor, r.role, app_s.status
       FROM appointments app
@@ -34,8 +43,10 @@ async function findDoctorAppointment({ id, date }) {
   );
 }
 
-async function listPatientAppointments(id: number) {
-  return await db.query<DoctorAppointment>(
+async function listPatientAppointments(
+  id: number
+): Promise<QueryResult<DoctorAppointment>> {
+  return await db.query(
     `
         SELECT app.id, app.date, p.name AS patient , d.name AS doctor, r.role, app_s.status
         FROM appointments app
@@ -50,8 +61,16 @@ async function listPatientAppointments(id: number) {
   );
 }
 
-async function createAppointment({ userId, doctorId, date }) {
-  return await db.query(
+async function createAppointment({
+  userId,
+  doctorId,
+  date,
+}: {
+  userId: number;
+  doctorId: number;
+  date: string | Date;
+}): Promise<void> {
+  await db.query(
     `
     INSERT INTO appointments (patient_id, doctor_id, date, status_id)
     VALUES ($1, $2 , $3 , (SELECT id FROM appointment_status WHERE status = 'pending'))
@@ -60,7 +79,13 @@ async function createAppointment({ userId, doctorId, date }) {
   );
 }
 
-async function findAppointment({ id, doctorId }) {
+async function findAppointment({
+  id,
+  doctorId,
+}: {
+  id: number;
+  doctorId: number;
+}): Promise<QueryResult<RawAppointment>> {
   return await db.query(
     `
     SELECT * FROM appointments WHERE id = $1 AND doctor_id = $2
@@ -69,7 +94,15 @@ async function findAppointment({ id, doctorId }) {
   );
 }
 
-async function aupdateAppointment({ id, doctorId, status }): Promise<void> {
+async function aupdateAppointment({
+  id,
+  doctorId,
+  status,
+}: {
+  id: number;
+  doctorId: number;
+  status: string;
+}): Promise<void> {
   await db.query(
     `
   UPDATE appointments 
